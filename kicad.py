@@ -30,11 +30,22 @@ class LibModule:
 class Module:
     def __init__(self, name):
         self.name = name
+        self.position = {
+            'Xpos': 0,
+            'Ypos': 0,
+            'orientation': 0,
+            'layer': 15,
+            'timestamp': '00000000 00000000',
+            'attr1': '~',
+            'attr2': '~'}
         self.cd = ''
         self.kw = ''
         self.fields = []
         self.drawings = []
         self.pads = [] # not implemented
+
+        self.reference('M*')
+        self.value(name)
 
     def __str__(self):
         s = '$MODULE ' + self.name + '\n'
@@ -60,15 +71,15 @@ class Module:
         s += '$EndMODULE ' + self.name + '\n'
         return s
 
-    def position(self, Xpos=0, Ypos=0, orientation=0, layer=15):
-        self.position = {
-        'Xpos': Xpos,
-        'Ypos': Ypos,
-        'orientation': orientation,
-        'layer': layer,
-        'timestamp': '00000000 00000000',
-        'attr1': '~',
-        'attr2': '~'}
+    def position(self, x=None, y=None, orientation=None, layer=None):
+        if x is not None:
+            self.position['Xpos'] = x
+        if y is not None:
+            self.position['Ypos'] = y
+        if orientation is not None:
+            self.position['orientation'] = orientation
+        if layer is not None:
+            self.position['layer'] = layer
 
     def comment(self, desc=''):
         self.cd = desc
@@ -108,12 +119,28 @@ class Segment:
         self.end = end
         self.width = width
         self.layer = layer
+
     def __str__(self):
         s = 'DS '
         s += ' '.join(map(str, self.start)) + ' '
         s += ' '.join(map(str, self.end)) + ' '
         s += str(self.width) + ' '
-        s += str(self.layer)
-        s += '\n'
+        s += str(self.layer) + '\n'
         return s
-        
+
+class Polygon:
+    def __init__(self, pts, width=0, layer=21):
+        self.length = len(pts)
+        self.pts = list(pts)
+        self.width = width
+        self.layer = layer
+
+    def __str__(self):
+        s = 'DP 0 0 0 0 '
+        s += str(self.length) + ' '
+        s += str(self.width) + ' '
+        s += str(self.layer) + '\n'
+        for pt in self.pts:
+            s += 'Dl ' + ' '.join(map(str, pt)) + '\n'
+        return s
+
