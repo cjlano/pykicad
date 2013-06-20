@@ -92,6 +92,10 @@ class Module:
             visible = 'V'
         else:
             visible = 'I'
+
+        # Remove posible duplicate
+        self.fields = [f for f in self.fields if f.get('nb') != nb]
+
         f = {
         'nb': nb,
         'Xpos': Xpos,
