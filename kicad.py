@@ -148,3 +148,17 @@ class Polygon:
             s += 'Dl ' + ' '.join(map(str, pt)) + '\n'
         return s
 
+class Circle:
+    def __init__(self, center, radius, width, layer=21):
+        self.center = center
+        self.pt = (center[0] + radius, center[1])
+        self.width = width
+        self.layer = layer
+
+    def __str__(self):
+        s = 'DC '
+        s += ' '.join(map(str, self.center)) + ' '
+        s += ' '.join(map(str, self.pt)) + ' '
+        s += str(self.width) + ' '
+        s += str(self.layer) + '\n'
+        return s
